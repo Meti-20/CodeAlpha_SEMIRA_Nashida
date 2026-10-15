@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="SEMIRA - Islamic Nasheed & Audio Player. Peaceful, spiritual, and elegant audio listening experience with a focus on Ethiopian Islamic nasheeds.">
+  <title>SEMIRA | Islamic Nasheed &amp; Audio Player</title>
+
+  <!-- Typography: Outfit for clean UI, Amiri for subtle Arabic calligraphy, Cinzel for refined headings -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cinzel:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Toast notification system for user alerts and errors -->
+  <div class="toast-container" id="toastContainer" aria-live="polite"></div>
+
+  <!-- Background decorative geometric glow -->
+  <div class="ambient-glow" aria-hidden="true"></div>
+
+  <!-- Main Application Wrapper -->
+  <div class="app-layout">
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar" aria-label="Main Navigation">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon" aria-hidden="true">
+            <!-- Ethiopian & Islamic geometric emblem -->
+            <svg viewBox="0 0 44 44" fill="none" class="brand-svg">
+              <rect x="6" y="6" width="32" height="32" rx="4" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+              <rect x="6" y="6" width="32" height="32" rx="4" transform="rotate(45 22 22)" stroke="currentColor" stroke-width="1.5" opacity="0.6"/>
+              <circle cx="22" cy="22" r="7" stroke="currentColor" stroke-width="1.5"/>
+              <circle cx="22" cy="22" r="2.5" fill="currentColor"/>
+              <line x1="22" y1="2" x2="22" y2="42" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+              <line x1="2" y1="22" x2="42" y2="22" stroke="currentColor" stroke-width="1" stroke-dasharray="2 2" opacity="0.4"/>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <div class="brand-name-row">
+              <span class="brand-name">SEMIRA</span>
+              <span class="brand-arabic" title="Semira in Arabic script">سَمِيرَا</span>
+            </div>
+            <span class="brand-sub">Islamic Nasheed Player</span>
+          </div>
+        </div>
+        <p class="brand-tagline">“Listen. Reflect. Remember.”</p>
+      </div>
+
+      <!-- Main Navigation Menu -->
+      <nav class="sidebar-nav">
+        <div class="nav-section-title">MENU</div>
+        <ul class="nav-list">
+          <li>
+            <button class="nav-item active" data-view="home" id="navHome">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+                <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1h-5v-6h-6v6H4a1 1 0 01-1-1V9.5z"/>
+              </svg>
+              <span>Home</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-view="explore" id="navExplore">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+              </svg>
+              <span>Explore</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-view="favorites" id="navFavorites">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+              </svg>
+              <span>Favorites</span>
+              <span class="nav-badge" id="favCountBadge">0</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-view="queue" id="navQueue">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+                <line x1="8" y1="6" x2="21" y2="6"/>
+                <line x1="8" y1="12" x2="21" y2="12"/>
+                <line x1="8" y1="18" x2="21" y2="18"/>
+                <polyline points="3 6 4 7 3 8"/>
+                <polyline points="3 12 4 13 3 14"/>
+                <polyline points="3 18 4 19 3 20"/>
+              </svg>
+              <span>Up Next Queue</span>
+              <span class="nav-badge" id="queueCountBadge">5</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item" data-view="recent" id="navRecent">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="nav-icon" aria-hidden="true">
+                <circle cx="12" cy="12" r="9"/>
+                <polyline points="12 7 12 12 15 15"/>
+              </svg>
+              <span>Recently Played</span>
+            </button>
+          </li>
+        </ul>
+
+        <!-- Category Shortcuts -->
+        <div class="nav-section-title">CATEGORIES</div>
+        <ul class="nav-list category-nav-list">
+          <li>
+            <button class="nav-item cat-item active" data-category="All" id="catNavAll">
+              <span class="cat-dot" aria-hidden="true"></span>
+              <span>All Nasheeds</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item cat-item" data-category="Ethiopian Nasheeds" id="catNavEthiopian">
+              <span class="cat-dot ethiopian-dot" aria-hidden="true"></span>
+              <span>Ethiopian Nasheeds</span>
+              <span class="cat-pill">Origin</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item cat-item" data-category="Spiritual" id="catNavSpiritual">
+              <span class="cat-dot" aria-hidden="true"></span>
+              <span>Spiritual</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item cat-item" data-category="Ramadan" id="catNavRamadan">
+              <span class="cat-dot" aria-hidden="true"></span>
+              <span>Ramadan</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item cat-item" data-category="Eid" id="catNavEid">
+              <span class="cat-dot" aria-hidden="true"></span>
+              <span>Eid</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-item cat-item" data-category="Peaceful" id="catNavPeaceful">
+              <span class="cat-dot" aria-hidden="true"></span>
+              <span>Peaceful</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Sidebar Footer Tools -->
+      <div class="sidebar-footer">
+        <div class="footer-tools-grid">
+          <button class="tool-btn" id="sidebarSleepTimerBtn" aria-label="Sleep timer settings" title="Sleep Timer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tool-icon" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+            <span class="tool-label">Sleep Timer</span>
+            <span class="tool-status" id="sidebarSleepStatus">Off</span>
+          </button>
+
+          <button class="tool-btn" id="sidebarSpeedBtn" aria-label="Playback speed settings" title="Playback Speed">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tool-icon" aria-hidden="true">
+              <polygon points="13 19 22 12 13 5 13 19"/>
+              <polygon points="2 19 11 12 2 5 2 19"/>
+            </svg>
+            <span class="tool-label">Speed</span>
+            <span class="tool-status" id="sidebarSpeedStatus">1x</span>
+          </button>
+        </div>
+
+        <!-- Theme Toggle Button -->
+        <button class="theme-toggle-btn" id="themeToggleBtn" aria-label="Toggle light and dark theme">
+          <div class="theme-icon-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="theme-icon sun-icon" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="theme-icon moon-icon" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+          </div>
+          <span class="theme-label" id="themeLabel">Dark Charcoal</span>
+        </button>
+
+        <button class="shortcuts-hint-btn" id="shortcutsBtn" aria-label="Open keyboard shortcuts guide">
+          <span>Shortcuts <kbd>?</kbd></span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop" aria-hidden="true"></div>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <div class="main-wrapper">
+
+      <!-- Top Header -->
+      <header class="top-header" role="banner">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon-menu" aria-hidden="true">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+
+        <!-- Search Bar -->
+        <div class="search-container" role="search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-icon" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input 
+            type="search" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="Search nasheeds, artists, or categories..." 
+            aria-label="Search nasheeds, artists, or categories"
+            autocomplete="off"
+            spellcheck="false"
+          >
+          <button class="search-clear-btn" id="searchClearBtn" aria-label="Clear search query" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <line x1="18" y1="6" x2="6" y2="18"/>
+              <line x1="6" y1="6" x2="18" y2="18"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Header Actions -->
+        <div class="header-actions">
+          <!-- Active Filter Pill -->
+          <div class="active-filter-badge" id="activeFilterBadge" hidden>
+            <span id="activeFilterText">All</span>
+            <button class="filter-reset-btn" id="filterResetBtn" aria-label="Reset filter">&times;</button>
+          </div>
+
+          <!-- Sleep Timer Live Countdown Pill -->
+          <button class="sleep-timer-pill" id="sleepTimerPill" aria-label="Sleep timer status" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="timer-pill-icon" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/>
+              <polyline points="12 6 12 12 16 14"/>
+            </svg>
+            <span id="sleepTimerCountdown">00:00</span>
+          </button>
+
+          <!-- Top theme toggle for mobile & fast access -->
+          <button class="header-icon-btn" id="topThemeBtn" aria-label="Toggle theme" title="Toggle Theme">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="top-theme-icon" aria-hidden="true">
+              <circle cx="12" cy="12" r="5"/>
+              <line x1="12" y1="1" x2="12" y2="3"/>
+              <line x1="12" y1="21" x2="12" y2="23"/>
+              <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+              <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+              <line x1="1" y1="12" x2="3" y2="12"/>
+              <line x1="21" y1="12" x2="23" y2="12"/>
+              <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+              <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            </svg>
+          </button>
+
+          <!-- Shortcuts Dialog Button -->
+          <button class="header-icon-btn" id="topShortcutsBtn" aria-label="View keyboard shortcuts" title="Keyboard Shortcuts (Press ?)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <rect x="2" y="4" width="20" height="16" rx="2.5"/>
+              <line x1="6" y1="8" x2="6.01" y2="8" stroke-width="2.5"/>
+              <line x1="10" y1="8" x2="10.01" y2="8" stroke-width="2.5"/>
+              <line x1="14" y1="8" x2="14.01" y2="8" stroke-width="2.5"/>
+              <line x1="18" y1="8" x2="18.01" y2="8" stroke-width="2.5"/>
+              <line x1="6" y1="12" x2="6.01" y2="12" stroke-width="2.5"/>
+              <line x1="18" y1="12" x2="18.01" y2="12" stroke-width="2.5"/>
+              <line x1="9" y1="16" x2="15" y2="16"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Main Scrollable Content Area -->
+      <main class="content-scroll" id="contentArea" tabindex="-1">
+
+        <!-- ==================== HOME VIEW ==================== -->
+        <section class="view-panel active" id="viewHome" aria-labelledby="homeHeading">
+          
+          <!-- Welcoming Hero Section with Ethiopian & Islamic Geometric Background -->
+          <div class="hero-banner">
+            <div class="hero-geometric-bg" aria-hidden="true">
+              <!-- Inline SVG subtle geometric pattern -->
+              <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="ethiopianIslamicLattice" width="60" height="60" patternUnits="userSpaceOnUse">
+                    <path d="M30 0 L60 30 L30 60 L0 30 Z" fill="none" stroke="currentColor" stroke-width="0.8" opacity="0.12"/>
+                    <circle cx="30" cy="30" r="12" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.10"/>
+                    <circle cx="30" cy="30" r="3" fill="currentColor" opacity="0.15"/>
+                    <path d="M30 18 L30 42 M18 30 L42 30" stroke="currentColor" stroke-width="0.8" opacity="0.12"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#ethiopianIslamicLattice)" />
+              </svg>
+            </div>
+
+            <div class="hero-content">
+              <div class="hero-badge">
+                <span class="hero-badge-star">✦</span>
+                <span>CodeAlpha Frontend Development Project • Task 4</span>
+              </div>
+              <h1 class="hero-title" id="homeHeading">Welcome to <span class="gold-gradient-text">SEMIRA</span></h1>
+              <p class="hero-description">Discover peaceful Islamic nasheeds from Ethiopia and beyond. Designed around serene mindfulness, spiritual melody, and cultural respect.</p>
+              
+              <div class="hero-actions">
+                <button class="hero-primary-btn" id="heroPlayNowBtn">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="btn-play-icon" aria-hidden="true">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                  </svg>
+                  <span>Listen Now</span>
+                </button>
+                <button class="hero-secondary-btn" id="heroExploreEthiopianBtn">
+                  <span>Explore Ethiopian Nasheeds</span>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="arrow-right-icon" aria-hidden="true">
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                    <polyline points="12 5 19 12 12 19"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- Hero Now-Playing Highlight Card -->
+            <div class="hero-highlight-card" id="heroHighlightCard">
+              <div class="highlight-cover-wrap">
+                <img src="assets/images/cover1.jpg" alt="Path of Light album cover" class="highlight-cover" id="heroHighlightImg">
+                <button class="highlight-play-btn" id="heroHighlightPlayBtn" aria-label="Play Path of Light">
+                  <svg viewBox="0 0 24 24" fill="currentColor" class="icon-play" aria-hidden="true">
+                    <polygon points="6 4 19 12 6 20 6 4"/>
+                  </svg>
+                </button>
+              </div>
+              <div class="highlight-info">
+                <span class="highlight-tag">FEATURED NASHEED</span>
+                <h2 class="highlight-title" id="heroHighlightTitle">Path of Light (Noor)</h2>
+                <p class="highlight-artist" id="heroHighlightArtist">Ethiopian Nasheed Artist</p>
+                <div class="highlight-meta">
+                  <span class="meta-pill">Ethiopia</span>
+                  <span class="meta-pill">Bayati / Tizita</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Category Quick Filter Chips -->
+          <div class="category-chips-bar" role="tablist" aria-label="Nasheed Categories">
+            <button class="chip active" data-category="All" role="tab" aria-selected="true">All Nasheeds</button>
+            <button class="chip" data-category="Ethiopian Nasheeds" role="tab" aria-selected="false">
+              <span class="chip-star">★</span> Ethiopian Nasheeds
+            </button>
+            <button class="chip" data-category="Spiritual" role="tab" aria-selected="false">Spiritual</button>
+            <button class="chip" data-category="Ramadan" role="tab" aria-selected="false">Ramadan</button>
+            <button class="chip" data-category="Eid" role="tab" aria-selected="false">Eid</button>
+            <button class="chip" data-category="Peaceful" role="tab" aria-selected="false">Peaceful</button>
+          </div>
+
+          <!-- ==================== FEATURED NASHEEDS SECTION ==================== -->
+          <section class="content-section" id="homeFeaturedSection" aria-labelledby="featuredHeading">
+            <div class="section-header">
+              <div>
+                <h2 class="section-title" id="featuredHeading">Featured Nasheeds</h2>
+                <p class="section-subtitle">Handpicked spiritual tracks for calm, reflection, and contemplation</p>
+              </div>
+              <button class="view-all-link" data-view="explore">View All &rarr;</button>
+            </div>
+
+            <!-- Featured Horizontal / Responsive Grid Cards -->
+            <div class="featured-cards-grid" id="featuredCardsGrid">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </section>
+
+          <!-- ==================== ETHIOPIAN NASHEEDS SECTION ==================== -->
+          <section class="content-section ethiopian-section" id="homeEthiopianSection" aria-labelledby="ethiopianHeading">
+            <div class="section-header">
+              <div>
+                <div class="section-tag-row">
+                  <span class="cultural-badge">ETHIOPIAN ROOTS</span>
+                </div>
+                <h2 class="section-title" id="ethiopianHeading">Ethiopian Nasheeds</h2>
+                <p class="section-subtitle">Islamic voices and spiritual melodies from Ethiopia, featuring traditional modes and devotional harmonies.</p>
+              </div>
+            </div>
+
+            <!-- Ethiopian Nasheed Dedicated Grid -->
+            <div class="cards-grid" id="ethiopianCardsGrid">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </section>
+
+          <!-- ==================== SACRED REFLECTIONS / ALL LIBRARY ==================== -->
+          <section class="content-section" id="homeLibrarySection" aria-labelledby="libraryHeading">
+            <div class="section-header">
+              <div>
+                <h2 class="section-title" id="libraryHeading">Spiritual Library</h2>
+                <p class="section-subtitle" id="librarySubtitle">Browse full collection of peaceful audio</p>
+              </div>
+              <div class="sort-selector-wrap" id="sortSelectorWrap">
+                <label for="sortSelect" class="visually-hidden">Sort by</label>
+                <select id="sortSelect" class="styled-select" aria-label="Sort nasheeds">
+                  <option value="default">Default Order</option>
+                  <option value="title">Title (A-Z)</option>
+                  <option value="artist">Artist</option>
+                  <option value="category">Category</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="cards-grid" id="allTracksCardsGrid">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </section>
+        </section>
+
+        <!-- ==================== EXPLORE VIEW ==================== -->
+        <section class="view-panel" id="viewExplore" aria-labelledby="exploreHeading">
+          <div class="view-header-banner">
+            <h1 class="view-main-title" id="exploreHeading">Explore Collection</h1>
+            <p class="view-main-subtitle">Filter by category, search by spiritual mode or artist, and discover new devotional tracks.</p>
+          </div>
+
+          <div class="explore-filter-pills" role="tablist" aria-label="Explore Filter">
+            <button class="filter-pill active" data-filter="All">All Categories</button>
+            <button class="filter-pill" data-filter="Ethiopian Nasheeds">Ethiopian Nasheeds</button>
+            <button class="filter-pill" data-filter="Spiritual">Spiritual</button>
+            <button class="filter-pill" data-filter="Ramadan">Ramadan</button>
+            <button class="filter-pill" data-filter="Eid">Eid</button>
+            <button class="filter-pill" data-filter="Peaceful">Peaceful</button>
+          </div>
+
+          <div class="search-results-info" id="searchResultsInfo" hidden>
+            <span id="searchResultsCount">0 results found</span>
+            <button class="reset-search-link" id="resetSearchFromExplore">Clear search</button>
+          </div>
+
+          <div class="cards-grid" id="exploreCardsGrid">
+            <!-- Dynamically populated via JS -->
+          </div>
+        </section>
+
+        <!-- ==================== FAVORITES VIEW ==================== -->
+        <section class="view-panel" id="viewFavorites" aria-labelledby="favoritesHeading">
+          <div class="view-header-banner">
+            <div class="favorites-header-row">
+              <div>
+                <h1 class="view-main-title" id="favoritesHeading">Favorite Nasheeds</h1>
+                <p class="view-main-subtitle">Your personally saved devotional tracks for quiet contemplation.</p>
+              </div>
+              <button class="secondary-action-btn" id="playAllFavoritesBtn" hidden>
+                <svg viewBox="0 0 24 24" fill="currentColor" class="btn-play-icon" aria-hidden="true">
+                  <polygon points="5 3 19 12 5 21 5 3"/>
+                </svg>
+                <span>Play Favorites</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Empty state when no favorites exist -->
+          <div class="empty-state-card" id="favoritesEmptyState">
+            <div class="empty-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+              </svg>
+            </div>
+            <h3 class="empty-title">No Favorites Saved Yet</h3>
+            <p class="empty-desc">Click the heart icon (♡) on any nasheed card or player to save it to your personal spiritual collection.</p>
+            <button class="empty-action-btn" data-view="home">Browse Nasheeds</button>
+          </div>
+
+          <!-- Favorites List Container -->
+          <div class="track-table-wrap" id="favoritesTableWrap" hidden>
+            <div class="track-list" id="favoritesTrackList">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== QUEUE / PLAYLIST VIEW ==================== -->
+        <section class="view-panel" id="viewQueue" aria-labelledby="queueHeading">
+          <div class="view-header-banner">
+            <div class="queue-header-row">
+              <div>
+                <h1 class="view-main-title" id="queueHeading">Up Next Queue</h1>
+                <p class="view-main-subtitle">Manage upcoming nasheeds. Click any track to jump immediately.</p>
+              </div>
+              <div class="queue-header-actions">
+                <button class="secondary-action-btn" id="clearQueueBtn">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="tool-icon" aria-hidden="true">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                  <span>Reset Queue</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="queue-container">
+            <div class="queue-now-playing-banner" id="queueNowPlayingBanner">
+              <span class="queue-badge">CURRENTLY PLAYING</span>
+              <div class="queue-current-card" id="queueCurrentCard">
+                <!-- Dynamically populated via JS -->
+              </div>
+            </div>
+
+            <h3 class="queue-subheading">UP NEXT IN QUEUE</h3>
+            <div class="track-list queue-track-list" id="queueTrackList">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== RECENTLY PLAYED VIEW ==================== -->
+        <section class="view-panel" id="viewRecent" aria-labelledby="recentHeading">
+          <div class="view-header-banner">
+            <div class="queue-header-row">
+              <div>
+                <h1 class="view-main-title" id="recentHeading">Recently Played</h1>
+                <p class="view-main-subtitle">Your recent listening history (saved locally in your browser).</p>
+              </div>
+              <button class="secondary-action-btn" id="clearRecentBtn" hidden>
+                <span>Clear History</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="empty-state-card" id="recentEmptyState">
+            <div class="empty-icon-wrap" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <circle cx="12" cy="12" r="9"/>
+                <polyline points="12 7 12 12 15 15"/>
+              </svg>
+            </div>
+            <h3 class="empty-title">No Recent Tracks</h3>
+            <p class="empty-desc">Your playback history will automatically appear here as you listen to nasheeds.</p>
+            <button class="empty-action-btn" data-view="home">Start Listening</button>
+          </div>
+
+          <div class="track-table-wrap" id="recentTableWrap" hidden>
+            <div class="track-list" id="recentTrackList">
+              <!-- Dynamically populated via JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== CENTRAL / EXPANDED NOW PLAYING SHOWCASE ==================== -->
+        <section class="now-playing-showcase" id="nowPlayingShowcase" aria-label="Now Playing Showcase">
+          <div class="showcase-inner">
+            <div class="showcase-decorative-border"></div>
+
+            <div class="showcase-grid">
+              
+              <!-- Album Art & Serene Visualizer Section -->
+              <div class="showcase-visual-col">
+                <div class="showcase-artwork-wrap" id="artworkWrap">
+                  <div class="artwork-halo" id="artworkHalo" aria-hidden="true"></div>
+                  <img src="assets/images/cover1.jpg" alt="Current Album Artwork" class="showcase-artwork" id="showcaseCover">
+                  <div class="showcase-playing-indicator" id="showcasePlayingPill" aria-hidden="true">
+                    <span class="wave-bar"></span>
+                    <span class="wave-bar"></span>
+                    <span class="wave-bar"></span>
+                  </div>
+                </div>
+
+                <!-- Web Audio API Subtle Visualizer Canvas -->
+                <div class="visualizer-wrapper">
+                  <div class="visualizer-header">
+                    <span class="visualizer-title">Audio Harmonic Spectrum</span>
+                    <span class="visualizer-mode" id="visualizerModeLabel">Web Audio API</span>
+                  </div>
+                  <canvas id="visualizerCanvas" width="340" height="48" aria-label="Audio frequency visualizer"></canvas>
+                </div>
+              </div>
+
+              <!-- Metadata & Controls Section -->
+              <div class="showcase-info-col">
+                
+                <div class="showcase-meta-top">
+                  <div class="category-country-badges">
+                    <span class="badge category-badge" id="showcaseCategory">Ethiopian Nasheed</span>
+                    <span class="badge country-badge" id="showcaseCountry">
+                      <span class="ethiopian-dot" aria-hidden="true"></span>
+                      <span id="showcaseCountryText">Ethiopia</span>
+                    </span>
+                  </div>
+
+                  <button class="fav-btn large-fav-btn" id="showcaseFavBtn" aria-label="Toggle favorite" title="Save to favorites">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="fav-icon-svg" aria-hidden="true">
+                      <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+                    </svg>
+                  </button>
+                </div>
+
+                <h2 class="showcase-title" id="showcaseTitle">Path of Light (Noor)</h2>
+                <p class="showcase-artist" id="showcaseArtist">Ethiopian Nasheed Artist</p>
+                <p class="showcase-desc" id="showcaseDesc">Contemplative vocal melody in D Minor with Ethiopian and Bayati modal inflections.</p>
+
+                <!-- Audio Progress Bar with Real-Time Duration -->
+                <div class="progress-section">
+                  <div class="time-row">
+                    <span class="time-label" id="currentTimeLabel">00:00</span>
+                    <span class="time-label" id="totalDurationLabel">00:00</span>
+                  </div>
+                  <div class="progress-bar-container" id="progressBarContainer" role="slider" aria-label="Audio progress bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+                    <div class="progress-bar-track">
+                      <div class="progress-bar-fill" id="progressBarFill"></div>
+                      <div class="progress-bar-handle" id="progressBarHandle"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Main Audio Player Controls -->
+                <div class="showcase-controls">
+                  <!-- Shuffle Button -->
+                  <button class="control-btn" id="shuffleBtn" aria-label="Toggle shuffle mode" title="Shuffle (S)">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                      <polyline points="16 3 21 3 21 8"/>
+                      <line x1="4" y1="20" x2="21" y2="3"/>
+                      <polyline points="21 16 21 21 16 21"/>
+                      <line x1="15" y1="15" x2="21" y2="21"/>
+                      <line x1="4" y1="4" x2="9" y2="9"/>
+                    </svg>
+                  </button>
+
+                  <!-- Previous Button (with >3s restart logic) -->
+                  <button class="control-btn" id="prevBtn" aria-label="Previous track (or restart if playing over 3s)" title="Previous Track (Arrow Left)">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <polygon points="19 20 9 12 19 4 19 20"/>
+                      <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5"/>
+                    </svg>
+                  </button>
+
+                  <!-- Primary Prominent Gold Play/Pause Button -->
+                  <button class="play-pause-btn showcase-play-btn" id="mainPlayPauseBtn" aria-label="Play or pause audio" title="Play / Pause (Space)">
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="play-svg" id="mainPlayIcon" aria-hidden="true">
+                      <polygon points="6 4 20 12 6 20 6 4"/>
+                    </svg>
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="pause-svg" id="mainPauseIcon" aria-hidden="true" hidden>
+                      <rect x="6" y="4" width="4" height="16" rx="1"/>
+                      <rect x="14" y="4" width="4" height="16" rx="1"/>
+                    </svg>
+                  </button>
+
+                  <!-- Next Button -->
+                  <button class="control-btn" id="nextBtn" aria-label="Next track" title="Next Track (Arrow Right)">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <polygon points="5 4 15 12 5 20 5 4"/>
+                      <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"/>
+                    </svg>
+                  </button>
+
+                  <!-- Repeat Mode Button (Off / Playlist / Current Song) -->
+                  <button class="control-btn" id="repeatBtn" aria-label="Toggle repeat mode" title="Repeat Mode: Off">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="repeat-icon-svg" aria-hidden="true">
+                      <polyline points="17 1 21 5 17 9"/>
+                      <path d="M3 11V9a4 4 0 014-4h14"/>
+                      <polyline points="7 23 3 19 7 15"/>
+                      <path d="M21 13v2a4 4 0 01-4 4H3"/>
+                    </svg>
+                    <span class="repeat-badge" id="repeatBadge" hidden>1</span>
+                  </button>
+                </div>
+
+                <!-- Secondary Controls: Volume & Quick Controls -->
+                <div class="showcase-secondary-controls">
+                  <!-- Volume Slider & Mute -->
+                  <div class="volume-control-wrap">
+                    <button class="volume-btn" id="volumeMuteBtn" aria-label="Mute or unmute volume" title="Mute/Unmute (M)">
+                      <!-- Volume High Icon -->
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="vol-icon" id="volIconHigh" aria-hidden="true">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                        <path d="M19.07 4.93a10 10 0 010 14.14M15.54 8.46a5 5 0 010 7.07"/>
+                      </svg>
+                      <!-- Volume Low Icon -->
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="vol-icon" id="volIconLow" aria-hidden="true" hidden>
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                        <path d="M15.54 8.46a5 5 0 010 7.07"/>
+                      </svg>
+                      <!-- Volume Muted Icon -->
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="vol-icon" id="volIconMuted" aria-hidden="true" hidden>
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                        <line x1="23" y1="9" x2="17" y2="15"/>
+                        <line x1="17" y1="9" x2="23" y2="15"/>
+                      </svg>
+                    </button>
+                    
+                    <div class="volume-slider-box">
+                      <label for="volumeSlider" class="visually-hidden">Audio volume</label>
+                      <input 
+                        type="range" 
+                        id="volumeSlider" 
+                        class="volume-slider" 
+                        min="0" 
+                        max="1" 
+                        step="0.01" 
+                        value="0.8" 
+                        aria-label="Volume slider"
+                      >
+                    </div>
+                  </div>
+
+                  <!-- Playback Speed Quick Pills -->
+                  <div class="speed-selector-group" role="group" aria-label="Playback speed selector">
+                    <span class="speed-group-label">Speed:</span>
+                    <button class="speed-pill" data-speed="0.75">0.75x</button>
+                    <button class="speed-pill active" data-speed="1.0">1x</button>
+                    <button class="speed-pill" data-speed="1.25">1.25x</button>
+                    <button class="speed-pill" data-speed="1.5">1.5x</button>
+                    <button class="speed-pill" data-speed="2.0">2x</button>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+    </div>
+
+    <!-- ==================== MINI PLAYER (DOCKED BOTTOM BAR) ==================== -->
+    <div class="mini-player" id="miniPlayer" role="region" aria-label="Compact audio player">
+      <!-- Mini Progress Track at Top of Docked Bar -->
+      <div class="mini-progress-bar-container" id="miniProgressContainer" role="slider" aria-label="Mini audio progress bar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0">
+        <div class="mini-progress-bar-fill" id="miniProgressFill"></div>
+      </div>
+
+      <div class="mini-player-content">
+        <!-- Track Thumbnail & Info -->
+        <div class="mini-track-info" id="miniTrackInfo">
+          <div class="mini-cover-wrap">
+            <img src="assets/images/cover1.jpg" alt="Mini player cover thumbnail" class="mini-cover" id="miniCover">
+          </div>
+          <div class="mini-text">
+            <h4 class="mini-title" id="miniTitle">Path of Light</h4>
+            <p class="mini-artist" id="miniArtist">Ethiopian Nasheed Artist</p>
+          </div>
+          <button class="fav-btn mini-fav-btn" id="miniFavBtn" aria-label="Toggle favorite on mini player">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="fav-icon-svg" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Center Controls -->
+        <div class="mini-center-controls">
+          <div class="mini-buttons-row">
+            <button class="mini-control-btn" id="miniPrevBtn" aria-label="Previous track">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <polygon points="19 20 9 12 19 4 19 20"/>
+                <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="2.5"/>
+              </svg>
+            </button>
+
+            <button class="mini-play-btn" id="miniPlayPauseBtn" aria-label="Play or pause audio">
+              <svg viewBox="0 0 24 24" fill="currentColor" class="play-svg" id="miniPlayIcon" aria-hidden="true">
+                <polygon points="6 4 20 12 6 20 6 4"/>
+              </svg>
+              <svg viewBox="0 0 24 24" fill="currentColor" class="pause-svg" id="miniPauseIcon" aria-hidden="true" hidden>
+                <rect x="6" y="4" width="4" height="16" rx="1"/>
+                <rect x="14" y="4" width="4" height="16" rx="1"/>
+              </svg>
+            </button>
+
+            <button class="mini-control-btn" id="miniNextBtn" aria-label="Next track">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <polygon points="5 4 15 12 5 20 5 4"/>
+                <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2.5"/>
+              </svg>
+            </button>
+          </div>
+
+          <div class="mini-time-display">
+            <span id="miniCurrentTime">00:00</span>
+            <span class="mini-time-sep">/</span>
+            <span id="miniDuration">00:00</span>
+          </div>
+        </div>
+
+        <!-- Right Side Quick Tools -->
+        <div class="mini-right-tools">
+          <!-- Mini Volume -->
+          <div class="mini-volume-wrap">
+            <button class="mini-tool-btn" id="miniVolumeBtn" aria-label="Mute or unmute">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-tool-icon" aria-hidden="true">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M15.54 8.46a5 5 0 010 7.07"/>
+              </svg>
+            </button>
+            <input type="range" id="miniVolumeSlider" class="volume-slider mini-volume-slider" min="0" max="1" step="0.01" value="0.8" aria-label="Mini player volume">
+          </div>
+
+          <!-- Speed Quick Pill -->
+          <button class="mini-badge-btn" id="miniSpeedBtn" aria-label="Playback speed" title="Change speed">1x</button>
+
+          <!-- Sleep Timer Quick Button -->
+          <button class="mini-tool-btn" id="miniSleepTimerBtn" aria-label="Sleep timer" title="Sleep timer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-tool-icon" aria-hidden="true">
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+          </button>
+
+          <!-- Jump to queue -->
+          <button class="mini-tool-btn" data-view="queue" aria-label="View Queue" title="Up Next Queue">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-tool-icon" aria-hidden="true">
+              <line x1="8" y1="6" x2="21" y2="6"/>
+              <line x1="8" y1="12" x2="21" y2="12"/>
+              <line x1="8" y1="18" x2="21" y2="18"/>
+              <line x1="3" y1="6" x2="3.01" y2="6"/>
+              <line x1="3" y1="12" x2="3.01" y2="12"/>
+              <line x1="3" y1="18" x2="3.01" y2="18"/>
+            </svg>
+          </button>
+
+          <!-- Scroll to main player -->
+          <button class="mini-tool-btn" id="scrollToPlayerBtn" aria-label="Expand player" title="Show Main Player">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="mini-tool-icon" aria-hidden="true">
+              <polyline points="18 15 12 9 6 15"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ==================== SLEEP TIMER MODAL ==================== -->
+  <div class="modal-backdrop" id="sleepTimerModal" role="dialog" aria-modal="true" aria-labelledby="sleepModalTitle" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="modal-header-icon" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+          </svg>
+          <h3 class="modal-title" id="sleepModalTitle">Sleep Timer</h3>
+        </div>
+        <button class="modal-close-btn" id="closeSleepModalBtn" aria-label="Close sleep timer modal">&times;</button>
+      </div>
+      <p class="modal-description">Select how long SEMIRA should play before softly pausing the audio.</p>
+      
+      <div class="sleep-options-list" role="radiogroup" aria-label="Sleep timer duration options">
+        <button class="sleep-option-btn active" data-minutes="0" role="radio" aria-checked="true">
+          <span>Off</span>
+          <span class="option-check">✓</span>
+        </button>
+        <button class="sleep-option-btn" data-minutes="10" role="radio" aria-checked="false">
+          <span>10 Minutes</span>
+          <span class="option-check">✓</span>
+        </button>
+        <button class="sleep-option-btn" data-minutes="20" role="radio" aria-checked="false">
+          <span>20 Minutes</span>
+          <span class="option-check">✓</span>
+        </button>
+        <button class="sleep-option-btn" data-minutes="30" role="radio" aria-checked="false">
+          <span>30 Minutes</span>
+          <span class="option-check">✓</span>
+        </button>
+        <button class="sleep-option-btn" data-minutes="45" role="radio" aria-checked="false">
+          <span>45 Minutes</span>
+          <span class="option-check">✓</span>
+        </button>
+        <button class="sleep-option-btn" data-minutes="60" role="radio" aria-checked="false">
+          <span>60 Minutes (1 Hour)</span>
+          <span class="option-check">✓</span>
+        </button>
+        <button class="sleep-option-btn" data-minutes="end-track" role="radio" aria-checked="false">
+          <span>End of Current Track</span>
+          <span class="option-check">✓</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== KEYBOARD SHORTCUTS MODAL ==================== -->
+  <div class="modal-backdrop" id="shortcutsModal" role="dialog" aria-modal="true" aria-labelledby="shortcutsModalTitle" hidden>
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="modal-header-icon" aria-hidden="true">
+            <rect x="2" y="4" width="20" height="16" rx="2.5"/>
+            <line x1="9" y1="16" x2="15" y2="16"/>
+          </svg>
+          <h3 class="modal-title" id="shortcutsModalTitle">Keyboard Shortcuts</h3>
+        </div>
+        <button class="modal-close-btn" id="closeShortcutsModalBtn" aria-label="Close shortcuts modal">&times;</button>
+      </div>
+      
+      <div class="shortcuts-table">
+        <div class="shortcut-row">
+          <div class="shortcut-desc">Play / Pause</div>
+          <div class="shortcut-keys"><kbd>Space</kbd></div>
+        </div>
+        <div class="shortcut-row">
+          <div class="shortcut-desc">Seek Forward 5s</div>
+          <div class="shortcut-keys"><kbd>&rarr;</kbd></div>
+        </div>
+        <div class="shortcut-row">
+          <div class="shortcut-desc">Seek Backward 5s</div>
+          <div class="shortcut-keys"><kbd>&larr;</kbd></div>
+        </div>
+        <div class="shortcut-row">
+          <div class="shortcut-desc">Increase Volume (+5%)</div>
+          <div class="shortcut-keys"><kbd>&uarr;</kbd></div>
+        </div>
+        <div class="shortcut-row">
+          <div class="shortcut-desc">Decrease Volume (-5%)</div>
+          <div class="shortcut-keys"><kbd>&darr;</kbd></div>
+        </div>
+        <div class="shortcut-row">
+          <div class="shortcut-desc">Mute / Unmute</div>
+          <div class="shortcut-keys"><kbd>M</kbd></div>
+        </div>
+        <div class="shortcut-row">
+          <div class="shortcut-desc">Close Modals / Overlays</div>
+          <div class="shortcut-keys"><kbd>Esc</kbd></div>
+        </div>
+      </div>
+      <p class="shortcuts-note">Note: Shortcuts are deactivated when typing inside the search bar.</p>
+    </div>
+  </div>
+
+  <!-- Primary Audio Element (controlled via HTML5 Audio API) -->
+  <audio id="audioPlayer" preload="metadata" crossorigin="anonymous"></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
